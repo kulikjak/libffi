@@ -294,6 +294,7 @@ typedef ffi_raw ffi_java_raw;
 #endif
 
 
+#if !FFI_NO_RAW_API
 FFI_API
 void ffi_raw_call (ffi_cif *cif,
 		   void (*fn)(void),
@@ -303,6 +304,7 @@ void ffi_raw_call (ffi_cif *cif,
 FFI_API void ffi_ptrarray_to_raw (ffi_cif *cif, void **args, ffi_raw *raw);
 FFI_API void ffi_raw_to_ptrarray (ffi_cif *cif, ffi_raw *raw, void **args);
 FFI_API size_t ffi_raw_size (ffi_cif *cif);
+#endif
 
 /* This is analogous to the raw API, except it uses Java parameter
    packing, even on 64-bit machines.  I.e. on 64-bit machines longs
