@@ -14,7 +14,7 @@ static test_structure_x ABI_ATTR structx (void)
 {
   test_structure_x s;
   for (int i = 0; i < NUM_ELEMS; i++)
-        s.data[i] = (ELEM_TYPE)i+1;
+    s.data[i] = (ELEM_TYPE)i+1;
   return s;
 }
 
@@ -22,7 +22,9 @@ int main (void)
 {
   ffi_cif cif;
   ffi_type tsx_type;
-  ffi_type *tsx_type_elements[NUM_ELEMS+1];
+  ffi_type tsx_innertype;
+  ffi_type *tsx_type_elements[2];
+  ffi_type *tsx_innertype_elements[NUM_ELEMS+1];
 
   /* This is a hack to get a properly aligned result buffer */
   test_structure_x *tsx_result =
@@ -33,10 +35,18 @@ int main (void)
   tsx_type.type = FFI_TYPE_STRUCT;
   tsx_type.elements = tsx_type_elements;
 
+  tsx_innertype.size = 0;
+  tsx_innertype.alignment = 0;
+  tsx_innertype.type = FFI_TYPE_STRUCT;
+  tsx_innertype.elements = tsx_innertype_elements;
+
+  tsx_type_elements[0] = &tsx_innertype;
+  tsx_type_elements[1] = NULL;
+
   for (int i = 0; i < NUM_ELEMS; i++) {
-    tsx_type_elements[i] = &FFI_ELEM_TYPE;
+    tsx_innertype_elements[i] = &FFI_ELEM_TYPE;
   }
-  tsx_type_elements[NUM_ELEMS] = NULL;
+  tsx_innertype_elements[NUM_ELEMS] = NULL;
 
   /* Initialize the cif */
   CHECK(ffi_prep_cif(&cif, ABI_NUM, 0, &tsx_type, NULL) == FFI_OK);
